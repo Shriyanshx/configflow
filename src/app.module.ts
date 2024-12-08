@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { ConditionModule } from './condition-node/modules/condition.module';
+import { AuthModule } from './auth/auth.module';
+import { OrgModule } from './org/org.module';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { ConditionModule } from './condition-node/modules/condition.module';
       logging: true,
     }),
     ConditionModule,
-    UserModule
+    UserModule,
+    AuthModule,
+    OrgModule
   ],
   controllers: [AppController],
   providers: [AppService],

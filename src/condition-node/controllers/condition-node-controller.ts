@@ -7,7 +7,8 @@ import {
     Delete, 
     Put, 
     HttpCode, 
-    HttpStatus 
+    HttpStatus, 
+    Req
   } from '@nestjs/common';
   import { ConditionService } from '../services/condition.service';
 import { ConditionNodeDto } from '../dtos/create-condition.dto';
@@ -18,8 +19,8 @@ import { ConditionNodeDto } from '../dtos/create-condition.dto';
   
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async createConditionNode(@Body() configDto: ConditionNodeDto) {
-      return this.conditionService.createConditionConfig(configDto);
+    async createConditionNode(@Req() request: Request, @Body() configDto: ConditionNodeDto) {
+      return this.conditionService.createConditionConfig(configDto, request['org_id']);
     }
   
     @Get(':id')
@@ -29,17 +30,19 @@ import { ConditionNodeDto } from '../dtos/create-condition.dto';
   
     @Put(':id')
     async updateConditionNode(
+      @Req() request: Request,
       @Param('id') id: string, 
       @Body() configDto: ConditionNodeDto
     ) {
-      return this.conditionService.updateConditionNode(id, configDto);
+      const org_id = request['org_id'];
+      return this.conditionService.updateConditionNode(id, org_id , configDto);
     }
   
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     async deleteConditionNode(@Param('id') id: string) {
       return this.conditionService.deleteConditionNode(id);
-    }
+    }b
   
     @Post('evaluate')
     async evaluateCondition(

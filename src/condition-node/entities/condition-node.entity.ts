@@ -8,6 +8,9 @@ export class ConditionNodeEntity {
   @PrimaryColumn('varchar', { length: 50 })
   id: string;
 
+  @Column('int',  )
+  org_id: number;
+
   @Column('varchar', { length: 50, nullable: true })
   parent_id?: string;
 

@@ -20,6 +20,14 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  findByEmail(userName: string) {
+    return this.userRepository.findOne({
+      where: {
+        email: userName,
+      },
+    });
+  }
+
   findAll() {
     return `This action returns all user`;
   }

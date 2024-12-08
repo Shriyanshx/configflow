@@ -18,7 +18,7 @@ export class ConditionDetailEntity {
 
   @Column('text', { nullable: true })
   value_text?: string;
-
+ 
   @Column('numeric', { nullable: true })
   value_numeric?: number;
 

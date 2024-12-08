@@ -20,15 +20,17 @@ export class ConditionService {
   ) {}
 
   async createConditionConfig(
-    conditionConfig: ConditionNodeDto
+    conditionConfig: ConditionNodeDto,
+    org_id: number,
   ): Promise<ConditionNodeEntity> {
     return this.entityManager.transaction(async transactionalEntityManager => {
-      return this.createConditionNode(conditionConfig, null, transactionalEntityManager);
+      return this.createConditionNode(conditionConfig, org_id, null, transactionalEntityManager);
     });
   }
 
   private async createConditionNode(
     config: ConditionNodeDto, 
+    org_id: number,
     parentId: string | null, 
     entityManager: EntityManager
   ): Promise<ConditionNodeEntity> {
@@ -44,8 +46,9 @@ export class ConditionService {
     const node = entityManager.create(ConditionNodeEntity, {
       id: nodeId,
       type: config.type,
+      org_id : org_id,
       operator: config.type === ConditionType.GROUP ? config.operator : null,
-      parent_id: parentId
+      parent_id: parentId,
     });
 
     const savedNode = await entityManager.save(node);
@@ -53,7 +56,7 @@ export class ConditionService {
     // Handle nested conditions for GROUP type
     if (config.type === ConditionType.GROUP && config.conditions) {
       for (const childConfig of config.conditions) {
-        await this.createConditionNode(childConfig, savedNode.id, entityManager);
+        await this.createConditionNode(childConfig, org_id, savedNode.id, entityManager);
       }
     }
 
@@ -95,6 +98,7 @@ export class ConditionService {
   
   async updateConditionNode(
     id: string, 
+    org_id: number,
     configDto: ConditionNodeDto
   ): Promise<ConditionNodeEntity> {
     return this.entityManager.transaction(async transactionalEntityManager => {
@@ -103,7 +107,7 @@ export class ConditionService {
       await transactionalEntityManager.delete(ConditionNodeEntity, { parent_id: id });
   
       // Recreate the node with new configuration
-      return this.createConditionNode(configDto, null, transactionalEntityManager);
+      return this.createConditionNode(configDto, org_id, null, transactionalEntityManager);
     });
   }
   
